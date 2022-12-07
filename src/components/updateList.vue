@@ -1,12 +1,12 @@
 <template>
   <div>
-    <router-view></router-view>
+   <UpdateList></UpdateList>
   </div>
 </template>
 
 <script>
 export default {
-  name:"App"
+  name:"updateListComponent"
 }
 </script>
 
