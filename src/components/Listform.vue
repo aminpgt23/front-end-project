@@ -1,12 +1,12 @@
 <template>
   <div>
- <div>
+  <div v-show="!success">
   <div>
       <router-link to="/face">
       <button type="button" class="btn btn-primary text-dark mt-4 ml-5">Back</button>
-    </router-link>
-  </div>
-  <div style="display: flex; justify-content:center">
+      </router-link>
+      </div>
+      <div style="display: flex; justify-content:center">
   
     <div
       class="border rounded border-primary justify-content-center mt-3 mb-4 ml-5"
@@ -16,11 +16,11 @@
         <h1 class="text-center">add Students</h1>
         <hr />
       </div>
-      <form @submit.prevent="inputStudent" v-show="!success">
+      <form @submit.prevent="inputStudent" >
         <div class="form-row">
           <div class="form-group col-md-6">
             <label>Student Name</label>
-            <input type="text" class="form-control" v-model="StudentData.nama" placeholder="Enter Name" />
+            <input type="text" class="form-control" v-model="StudentData.nama" placeholder="Enter Name" required />
           </div>
           <div class="form-group col-md-6">
             <label>Soft Skill</label>
@@ -30,7 +30,7 @@
         <div class="form-row">
           <div class="form-group col-md-2">
             <label>StudentAge</label>
-            <input type="text" class="form-control" v-model="StudentData.umur" style="width:130px"  placeholder="Enter Age" />
+            <input type="number" class="form-control" v-model="StudentData.umur" style="width:130px"  placeholder="Enter Age" />
           </div>
           <div class="form-group col-md-4">
             <label class="ml-5">Gender</label>
@@ -46,7 +46,7 @@
           </div>
           <div class="form-group col-md-6">
             <label>Student Email</label>
-            <input type="email" class="form-control" v-model="StudentData.email" placeholder="Enter Name" />
+            <input type="email" class="form-control" v-model="StudentData.email" placeholder="Enter Name" required />
           </div>
           <div class="form-group col-md-6">
             <label>Interest</label>
@@ -65,14 +65,17 @@
       </form>
     </div>
   </div>
-  <succesform v-show="success"></succesform>
- </div>
+</div>
+    <!-- <div v-show="success">
+      <succesform></succesform>
+    </div> -->
   </div>
 </template>
 
 <script>
-import succesform from './succesform.vue'
+// import succesform from './succesform.vue'
 import studentService from '../services/studentService'
+import Swal from 'sweetalert2'
 
 export default {
   data(){
@@ -100,7 +103,19 @@ export default {
         studentService.create(data)
       .then(response => {
         console.log(response.data);
+      });
+            this.$fire({
+        type: 'success',
+        title: 'sukses',
+        text: 'Data sudah terdaftar',
+        footer: 'tetap semangat ><'
+      }).then(() => {
+        this.$router.push('/face')
       })
+       
+              .catch(() => {
+                 this.$router.push('/face')
+              });
       }else{
           studentService.updateStudent(data.id,data)
               .then(response => {
@@ -110,6 +125,27 @@ export default {
               .catch(e => {
                   console.log(e);
               });
+              let timerInterval
+              Swal.fire({
+              timerProgressBar: true,
+              didOpen: () => {
+              Swal.showLoading()
+              const b = Swal.getHtmlContainer().querySelector('b')
+              timerInterval = setInterval(() => {
+                b.textContent = Swal.getTimerLeft()
+              }, 100)
+                },
+                willClose: () => {
+                  clearInterval(timerInterval)
+                },
+                title: 'sukses',
+                timer:1000,
+                text: 'Data sudah diupdate',
+                footer: 'tetap semangat ><'
+              }).then(() => {
+                this.$router.push('/face')
+              })
+            
       }
       
     },
@@ -117,7 +153,7 @@ export default {
   },
     name:"ListformComponents",
     components:{
-     succesform
+    //  succesform
       
     },
     props: ["StudentDataProps"],

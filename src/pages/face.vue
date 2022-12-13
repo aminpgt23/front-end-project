@@ -1,8 +1,8 @@
 <template>
   <div>
     <navbar></navbar>
-    <tombol></tombol>
-    <viewData></viewData><hr>
+    <tombol @searchEmit="searchFunc" ></tombol>
+    <viewData :searchDataProps="searchData"></viewData><hr>
     <copyright></copyright>
     </div>
 </template>
@@ -18,6 +18,16 @@ export default {
         copyright,
         viewData,
         tombol
+    },
+    methods: {
+        searchFunc(searchData){
+            this.searchData = searchData;
+        }
+    },
+    data(){
+        return{
+            searchData : null,
+        }
     }
 }
 </script>
